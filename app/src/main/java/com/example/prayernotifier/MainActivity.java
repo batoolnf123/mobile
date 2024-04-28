@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         /*
          * the user will get notified based on what prayer is upcoming next
          */
-        for (int i = 0; i < list.size(); i++) {
+     /*   for (int i = 0; i < list.size(); i++) {
             // Generate a pending intent to be used later
             Intent intent = new Intent(MainActivity.this, PrayTimeNotification.class);
             intent.putExtra("NotificationID", 1);
@@ -425,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 long timeInMillis = finalDate.getTime(); // get time in millisecond
                 alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
             }
-        }
+        }*/
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data)

@@ -1,7 +1,7 @@
 package com.example.prayernotifier;
 
 
-
+import com.example.prayernotifier.R;
 import android.content.Context;
 import android.text.Layout;
 import android.view.LayoutInflater;
@@ -16,58 +16,58 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class ViewAdapter  extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> {
+public class ViewAdapter extends RecyclerView.Adapter<ViewAdapter.MyViewHolder> {
 
-        Context context;
-        ArrayList<PrayerTime> list;
+    Context context;
+    ArrayList<PrayerTime> list;
 
-        public ViewAdapter(Context c,ArrayList<PrayerTime> l){
-            context = c;
-            list = l;
-        }
+    public ViewAdapter(Context c,ArrayList<PrayerTime> l){
+        context = c;
+        list = l;
+    }
 
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.time_view,viewGroup, false));
-        }
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.activity_view_adapter,viewGroup, false));
+    }
 
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
 
-            holder.name.setText(list.get(i).getName());
-            holder.time.setText(list.get(i).getTime());
+        holder.name.setText(list.get(i).getName());
+        holder.time.setText(list.get(i).getTime());
 
-            boolean test = list.get(i).isNext();
-/*
-            if(test){ //for test
-                holder.layout.setBackgroundResource(R.drawable.now_prayer);
-                holder.icon.setBackgroundResource(R.drawable.ic_baseline_notifications_none_24);
+        boolean test = list.get(i).isNext();
 
-            }
+        if(test){ //for test
+            holder.layout.setBackgroundResource(R.drawable.now_prayer);
+            holder.icon.setBackgroundResource(R.drawable.baseline22);
 
         }
 
-        @Override
-        public int getItemCount() {
-            return list.size();
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder {
+
+        TextView name,time;
+        LinearLayout layout;
+        TextView icon;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            name = (TextView) itemView.findViewById(R.id.prayerName);
+            time = (TextView) itemView.findViewById(R.id.prayerTime);
+            layout = itemView.findViewById(R.id.timeView);
+            icon = (TextView) itemView.findViewById(R.id.notifyIcon);
+
         }
+    }
 
-        class MyViewHolder extends RecyclerView.ViewHolder {
-
-            TextView name,time;
-            LinearLayout layout;
-            TextView icon;
-
-            public MyViewHolder(@NonNull View itemView) {
-                super(itemView);
-                name = (TextView) itemView.findViewById(R.id.prayerName);
-                time = (TextView) itemView.findViewById(R.id.prayerTime);
-                layout = itemView.findViewById(R.id.timeView);
-                icon = (TextView) itemView.findViewById(R.id.notifyIcon);
-
-            }
-        }
-
-    } */
 }
+
