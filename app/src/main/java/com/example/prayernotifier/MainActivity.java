@@ -1,14 +1,526 @@
 package com.example.prayernotifier;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+public class MainActivity extends AppCompatActivity implements LocationListener {
+    Button calculatePrayTimes;
+    ArrayList<PrayerTime> list;
+    RecyclerView times;
+    RecyclerView.Adapter adapter;
+    LocationManager locationManager;
+    double latitude;
+    double longitude;
+    private AudioManager myAudioManager;
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel(); // Create a notification channel
+
+        Button settings = findViewById(R.id.settingButton);
+        settings.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivityForResult(intent, 2);
+            }
+        });
+
+
+        //Runtime permissions
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 100);
+        }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+
+
+        refrechTimes();
+
     }
+
+    private void refrechTimes(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        PrayTime prayers = new PrayTime();
+        double latitude1 = 24.644659;
+        double longitude2 = 46.587570;
+        double timezone = prayers.getBaseTimeZone();
+
+        String s1 = prefs.getString(getString(R.string.juristic), "");
+        String s2 = prefs.getString(getString(R.string.calculation), "");
+        String s3 = prefs.getString(getString(R.string.latitude), "");
+        String s4 = prefs.getString(getString(R.string.time), "");
+
+
+        int RG1;
+        int RG2;
+        int RG3;
+        int RG4 = 0; // just intilize
+        if (!(s1.equals("") && s2.equals("") && s3.equals("") && s4.equals(""))) {
+            RG1 = Integer.parseInt(s1);
+            RG2 = Integer.parseInt(s2);
+            RG3 = Integer.parseInt(s3);
+            RG4 = Integer.parseInt(s4);
+
+            prayers.setTimeFormat(RG4);
+            prayers.setCalcMethod(RG2);
+            prayers.setAsrJuristic(RG1);
+            prayers.setAdjustHighLats(RG3);
+        } else {
+            prayers.setTimeFormat(1);
+            prayers.setCalcMethod(4);
+            prayers.setAsrJuristic(0);
+            prayers.setAdjustHighLats(0);
+        }
+
+
+        Date now = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(now);
+
+        int[] offsets = {0, 0, 0, 0, 0, 0, 0}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
+        prayers.tune(offsets);
+
+        ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal, latitude1, longitude2, timezone);
+
+
+        PrayerTime fajer = new PrayerTime();
+        PrayerTime Sunrise = new PrayerTime();
+        PrayerTime Duhur = new PrayerTime();
+        PrayerTime asser = new PrayerTime();
+        PrayerTime Sunset = new PrayerTime();
+        PrayerTime magrib = new PrayerTime();
+        PrayerTime isha = new PrayerTime();
+
+        ArrayList<String> prayerNames = prayers.getTimeNames();
+        times = (RecyclerView) findViewById(R.id.timesView);
+        list = new ArrayList<PrayerTime>();
+
+
+        Date nowtime = new Date();
+        SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH");
+        String time = TIME_FORMAT.format(nowtime);
+
+        int timeInt = Integer.parseInt(time);
+        int next = 0;
+        double nextFloat = 0;
+        boolean isNext= true;
+
+
+        for (int i = 0; i < prayerTimes.size(); i++) {
+            if (i == 0) {
+                if(RG4==0) {
+                    fajer.setName(prayerNames.get(i));
+                    fajer.setTime(prayerTimes.get(i));
+                    String p = prayerTimes.get(i);
+                    String nextPrayer = p.substring(0, 2);
+                    int hour = Integer.parseInt(nextPrayer);
+                    if (timeInt > hour && timeInt<20) {
+                        fajer.setNext(false);
+                    } else if (next < hour && isNext) {
+                        fajer.setNext(true);
+                        next = hour;
+                        isNext = false;
+                    } else {
+                        fajer.setNext(false);
+                    }
+                }else if(RG4==3){
+                    fajer.setName(prayerNames.get(i));
+                    fajer.setTime(prayerTimes.get(i).substring(0, 5));
+                    String p = prayerTimes.get(i).substring(0, 5);
+                    double hour = Double.parseDouble(p);
+                    if (timeInt > hour && timeInt<20) {
+                        fajer.setNext(false);
+                    } else if (nextFloat < hour && isNext) {
+                        fajer.setNext(true);
+                        nextFloat = hour;
+                        isNext = false;
+                    } else {
+                        fajer.setNext(false);
+                    }
+                }else {
+                    fajer.setName(prayerNames.get(i));
+                    fajer.setTime(prayerTimes.get(i));
+                }
+                list.add(fajer);
+            }
+            if (i == 1) {
+                if(RG4==0) {
+                    Sunrise.setName(prayerNames.get(i));
+                    Sunrise.setTime(prayerTimes.get(i));
+                    String p = prayerTimes.get(i);
+                    String nextPrayer = p.substring(0, 2);
+                    int hour = Integer.parseInt(nextPrayer);
+                    if (timeInt > hour) {
+                        Sunrise.setNext(false);
+                    } else if (next < hour && isNext) {
+                        Sunrise.setNext(true);
+                        next = hour;
+                        isNext = false;
+                    } else {
+                        Sunrise.setNext(false);
+                    }
+                }else if(RG4==3){
+                    Sunrise.setName(prayerNames.get(i));
+                    Sunrise.setTime(prayerTimes.get(i).substring(0, 5));
+                    String p = prayerTimes.get(i).substring(0, 5);
+                    double hour = Double.parseDouble(p);
+                    if (timeInt > hour) {
+                        Sunrise.setNext(false);
+                    } else if (nextFloat < hour && isNext) {
+                        Sunrise.setNext(true);
+                        nextFloat = hour;
+                        isNext = false;
+                    } else {
+                        Sunrise.setNext(false);
+                    }
+                }else {
+                    Sunrise.setName(prayerNames.get(i));
+                    Sunrise.setTime(prayerTimes.get(i));
+                }
+                list.add(Sunrise);
+            }
+            if (i == 2) {
+                if(RG4==0) {
+                    Duhur.setName(prayerNames.get(i));
+                    Duhur.setTime(prayerTimes.get(i));
+                    String p = prayerTimes.get(i);
+                    String nextPrayer = p.substring(0, 2);
+                    int hour = Integer.parseInt(nextPrayer);
+                    if (timeInt > hour) {
+                        Duhur.setNext(false);
+                    } else if (next < hour && isNext) {
+                        Duhur.setNext(true);
+                        next = hour;
+                        isNext = false;
+                    } else {
+                        Duhur.setNext(false);
+                    }
+                }else if(RG4==3){
+                    Duhur.setName(prayerNames.get(i));
+                    Duhur.setTime(prayerTimes.get(i).substring(0, 5));
+                    String p = prayerTimes.get(i).substring(0, 5);
+                    double hour = Double.parseDouble(p);
+                    if (timeInt > hour) {
+                        Duhur.setNext(false);
+                    } else if (nextFloat < hour && isNext) {
+                        Duhur.setNext(true);
+                        nextFloat = hour;
+                        isNext = false;
+                    } else {
+                        Duhur.setNext(false);
+                    }
+                }else {
+                    Duhur.setName(prayerNames.get(i));
+                    Duhur.setTime(prayerTimes.get(i));
+                }
+                list.add(Duhur);
+            }
+            if (i == 3) {
+                if(RG4==0) {
+                    asser.setName(prayerNames.get(i));
+                    asser.setTime(prayerTimes.get(i));
+                    String p = prayerTimes.get(i);
+                    String nextPrayer = p.substring(0, 2);
+                    int hour = Integer.parseInt(nextPrayer);
+                    if (timeInt > hour) {
+                        asser.setNext(false);
+                    } else if (next < hour && isNext) {
+                        asser.setNext(true);
+                        next = hour;
+                        isNext = false;
+                    } else {
+                        asser.setNext(false);
+                    }
+                }else if(RG4==3){
+                    asser.setName(prayerNames.get(i));
+                    asser.setTime(prayerTimes.get(i).substring(0, 5));
+                    String p = prayerTimes.get(i).substring(0, 5);
+                    double hour = Double.parseDouble(p);
+                    if (timeInt > hour) {
+                        asser.setNext(false);
+                    } else if (nextFloat < hour && isNext) {
+                        asser.setNext(true);
+                        nextFloat = hour;
+                        isNext = false;
+                    } else {
+                        asser.setNext(false);
+                    }
+                }else {
+                    asser.setName(prayerNames.get(i));
+                    asser.setTime(prayerTimes.get(i));
+                }
+                list.add(asser);
+            }
+
+            if (i == 5) {
+                if(RG4==0) {
+                    magrib.setName(prayerNames.get(i));
+                    magrib.setTime(prayerTimes.get(i));
+                    String p = prayerTimes.get(i);
+                    String nextPrayer = p.substring(0, 2);
+                    int hour = Integer.parseInt(nextPrayer);
+                    if (timeInt > hour) {
+                        magrib.setNext(false);
+                    } else if (next < hour && isNext) {
+                        magrib.setNext(true);
+                        next = hour;
+                        isNext = false;
+                    } else {
+                        magrib.setNext(false);
+                    }
+                }else if(RG4==3){
+                    magrib.setName(prayerNames.get(i));
+                    magrib.setTime(prayerTimes.get(i).substring(0, 5));
+                    String p = prayerTimes.get(i).substring(0, 5);
+                    double hour = Double.parseDouble(p);
+                    if (timeInt > hour) {
+                        magrib.setNext(false);
+                    } else if (nextFloat < hour && isNext) {
+                        magrib.setNext(true);
+                        nextFloat = hour;
+                        isNext = false;
+                    } else {
+                        magrib.setNext(false);
+                    }
+                }else{
+                    magrib.setName(prayerNames.get(i));
+                    magrib.setTime(prayerTimes.get(i));
+                }
+                list.add(magrib);
+            }
+            if (i == 6) {
+                if(RG4==0) {
+                    isha.setName(prayerNames.get(i));
+                    isha.setTime(prayerTimes.get(i));
+                    String p = prayerTimes.get(i);
+                    String nextPrayer = p.substring(0, 2);
+                    int hour = Integer.parseInt(nextPrayer);
+                    if (timeInt > hour) {
+                        isha.setNext(false);
+                    } else if (next < hour && isNext) {
+                        isha.setNext(true);
+                        next = hour;
+                        isNext = false;
+                    } else {
+                        isha.setNext(false);
+                    }
+                }else if(RG4==3){
+                    isha.setName(prayerNames.get(i));
+                    isha.setTime(prayerTimes.get(i).substring(0, 5));
+                    String p = prayerTimes.get(i).substring(0, 5);
+                    double hour = Double.parseDouble(p);
+                    System.out.println(hour);
+                    if (timeInt > hour) {
+                        isha.setNext(false);
+                    } else if (nextFloat < hour && isNext) {
+                        isha.setNext(true);
+                        nextFloat = hour;
+                        isNext = false;
+                    } else {
+                        isha.setNext(false);
+                    }
+                }else{
+                    isha.setName(prayerNames.get(i));
+                    isha.setTime(prayerTimes.get(i));
+                }
+                list.add(isha);
+            }
+        }
+        times.setHasFixedSize(true);
+
+        adapter = new ViewAdapter(MainActivity.this, list);
+
+        times.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        // get the current date (today) in yyyy/MM/dd format
+        Date today = new Date();
+        SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd ");
+        String date = DATE_FORMAT.format(today);
+
+        /*
+         * the user will get notified based on what prayer is upcoming next
+         */
+        for (int i = 0; i < list.size(); i++) {
+            // Generate a pending intent to be used later
+            Intent intent = new Intent(MainActivity.this, PrayTimeNotification.class);
+            intent.putExtra("NotificationID", 1);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+            String timeInHours="";
+            if(RG4==0) {
+                timeInHours = list.get(i).getTime().concat(":00");
+            }else if(RG4==3){
+                String c = list.get(i).getTime();
+                String t = c.substring(0,c.indexOf("."));
+                if(Integer.parseInt(t)<10){
+                    String time1 = "0"+t +":"+c.substring(c.indexOf(".")+1,c.indexOf(".")+3)+":00";
+                    timeInHours = time1;
+                }else{
+                    String time1 = t +":"+c.substring(c.indexOf(".")+1,c.indexOf(".")+3)+":00";
+                    timeInHours = time1;
+                }
+            }
+            //set the alarm as hh:mm:ss
+            if(list.get(i).isNext()) {
+                Toast.makeText(MainActivity.this, "alarm is set at " + timeInHours, Toast.LENGTH_SHORT).show();
+                String myDate = date.concat(timeInHours);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date finalDate = null;
+                try {
+                    finalDate = sdf.parse(myDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                long timeInMillis = finalDate.getTime(); // get time in millisecond
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            }
+        }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(resultCode == 0)
+        {
+            refrechTimes();
+        }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "PrayerTimeReminderChannel";
+            String description = "Channel for upcoming prayer time";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("CHANEL_1", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLocation() {
+
+        try {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, MainActivity.this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+
+        Toast.makeText(this, "" + location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_SHORT).show();
+        try {
+            Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            String address = addresses.get(0).getAddressLine(0);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+
+
 }
+
+
+//--------------------- Copyright Block ----------------------
+/*
+
+PrayTime.java: Prayer Times Calculator (ver 1.0)
+Copyright (C) 2007-2010 PrayTimes.org
+
+Java Code By: Hussain Ali Khan
+Original JS Code By: Hamid Zarrabi-Zadeh
+
+License: GNU LGPL v3.0
+
+TERMS OF USE:
+	Permission is granted to use this code, with or
+	without modification, in any website or application
+	provided that credit is given to the original work
+	with a link back to PrayTimes.org.
+
+This program is distributed in the hope that it will
+be useful, but WITHOUT ANY WARRANTY.
+
+PLEASE DO NOT REMOVE THIS COPYRIGHT BLOCK.
+
+*/
