@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         SharedPreferences.Editor editor = prefs.edit();
 
 
-        refrechTimes();
+        refreshTimes();
 
     }
 
-    private void refrechTimes(){
+    private void refreshTimes(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         PrayerTime Sunrise = new PrayerTime();
         PrayerTime Duhur = new PrayerTime();
         PrayerTime asser = new PrayerTime();
-        PrayerTime Sunset = new PrayerTime();
+
         PrayerTime magrib = new PrayerTime();
         PrayerTime isha = new PrayerTime();
 
@@ -154,12 +154,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         boolean isNext= true;
 
 
-        for (int i = 0; i < prayerTimes.size(); i++) {
-            if (i == 0) {
+        for (int t = 0; t < prayerTimes.size(); t++) {
+            switch (t){
+            case 0: {
                 if(RG4==0) {
-                    fajer.setName(prayerNames.get(i));
-                    fajer.setTime(prayerTimes.get(i));
-                    String p = prayerTimes.get(i);
+                    fajer.setName(prayerNames.get(t));
+                    fajer.setTime(prayerTimes.get(t));
+                    String p = prayerTimes.get(t);
                     String nextPrayer = p.substring(0, 2);
                     int hour = Integer.parseInt(nextPrayer);
                     if (timeInt > hour && timeInt<20) {
@@ -172,9 +173,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         fajer.setNext(false);
                     }
                 }else if(RG4==3){
-                    fajer.setName(prayerNames.get(i));
-                    fajer.setTime(prayerTimes.get(i).substring(0, 5));
-                    String p = prayerTimes.get(i).substring(0, 5);
+                    fajer.setName(prayerNames.get(t));
+                    fajer.setTime(prayerTimes.get(t).substring(0, 5));
+                    String p = prayerTimes.get(t).substring(0, 5);
                     double hour = Double.parseDouble(p);
                     if (timeInt > hour && timeInt<20) {
                         fajer.setNext(false);
@@ -186,16 +187,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         fajer.setNext(false);
                     }
                 }else {
-                    fajer.setName(prayerNames.get(i));
-                    fajer.setTime(prayerTimes.get(i));
+                    fajer.setName(prayerNames.get(t));
+                    fajer.setTime(prayerTimes.get(t));
                 }
                 list.add(fajer);
+                break;
             }
-            if (i == 1) {
+                case 1: {
                 if(RG4==0) {
-                    Sunrise.setName(prayerNames.get(i));
-                    Sunrise.setTime(prayerTimes.get(i));
-                    String p = prayerTimes.get(i);
+                    Sunrise.setName(prayerNames.get(t));
+                    Sunrise.setTime(prayerTimes.get(t));
+                    String p = prayerTimes.get(t);
                     String nextPrayer = p.substring(0, 2);
                     int hour = Integer.parseInt(nextPrayer);
                     if (timeInt > hour) {
@@ -208,9 +210,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         Sunrise.setNext(false);
                     }
                 }else if(RG4==3){
-                    Sunrise.setName(prayerNames.get(i));
-                    Sunrise.setTime(prayerTimes.get(i).substring(0, 5));
-                    String p = prayerTimes.get(i).substring(0, 5);
+                    Sunrise.setName(prayerNames.get(t));
+                    Sunrise.setTime(prayerTimes.get(t).substring(0, 5));
+                    String p = prayerTimes.get(t).substring(0, 5);
                     double hour = Double.parseDouble(p);
                     if (timeInt > hour) {
                         Sunrise.setNext(false);
@@ -222,16 +224,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         Sunrise.setNext(false);
                     }
                 }else {
-                    Sunrise.setName(prayerNames.get(i));
-                    Sunrise.setTime(prayerTimes.get(i));
+                    Sunrise.setName(prayerNames.get(t));
+                    Sunrise.setTime(prayerTimes.get(t));
                 }
                 list.add(Sunrise);
-            }
-            if (i == 2) {
+            }break;
+                case 2: {
                 if(RG4==0) {
-                    Duhur.setName(prayerNames.get(i));
-                    Duhur.setTime(prayerTimes.get(i));
-                    String p = prayerTimes.get(i);
+                    Duhur.setName(prayerNames.get(t));
+                    Duhur.setTime(prayerTimes.get(t));
+                    String p = prayerTimes.get(t);
                     String nextPrayer = p.substring(0, 2);
                     int hour = Integer.parseInt(nextPrayer);
                     if (timeInt > hour) {
@@ -244,9 +246,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         Duhur.setNext(false);
                     }
                 }else if(RG4==3){
-                    Duhur.setName(prayerNames.get(i));
-                    Duhur.setTime(prayerTimes.get(i).substring(0, 5));
-                    String p = prayerTimes.get(i).substring(0, 5);
+                    Duhur.setName(prayerNames.get(t));
+                    Duhur.setTime(prayerTimes.get(t).substring(0, 5));
+                    String p = prayerTimes.get(t).substring(0, 5);
                     double hour = Double.parseDouble(p);
                     if (timeInt > hour) {
                         Duhur.setNext(false);
@@ -258,16 +260,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         Duhur.setNext(false);
                     }
                 }else {
-                    Duhur.setName(prayerNames.get(i));
-                    Duhur.setTime(prayerTimes.get(i));
+                    Duhur.setName(prayerNames.get(t));
+                    Duhur.setTime(prayerTimes.get(t));
                 }
                 list.add(Duhur);
-            }
-            if (i == 3) {
+            }break;
+                case 3: {
                 if(RG4==0) {
-                    asser.setName(prayerNames.get(i));
-                    asser.setTime(prayerTimes.get(i));
-                    String p = prayerTimes.get(i);
+                    asser.setName(prayerNames.get(t));
+                    asser.setTime(prayerTimes.get(t));
+                    String p = prayerTimes.get(t);
                     String nextPrayer = p.substring(0, 2);
                     int hour = Integer.parseInt(nextPrayer);
                     if (timeInt > hour) {
@@ -280,9 +282,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         asser.setNext(false);
                     }
                 }else if(RG4==3){
-                    asser.setName(prayerNames.get(i));
-                    asser.setTime(prayerTimes.get(i).substring(0, 5));
-                    String p = prayerTimes.get(i).substring(0, 5);
+                    asser.setName(prayerNames.get(t));
+                    asser.setTime(prayerTimes.get(t).substring(0, 5));
+                    String p = prayerTimes.get(t).substring(0, 5);
                     double hour = Double.parseDouble(p);
                     if (timeInt > hour) {
                         asser.setNext(false);
@@ -294,17 +296,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         asser.setNext(false);
                     }
                 }else {
-                    asser.setName(prayerNames.get(i));
-                    asser.setTime(prayerTimes.get(i));
+                    asser.setName(prayerNames.get(t));
+                    asser.setTime(prayerTimes.get(t));
                 }
                 list.add(asser);
             }
-
-            if (i == 5) {
+break;
+                case 5: {
                 if(RG4==0) {
-                    magrib.setName(prayerNames.get(i));
-                    magrib.setTime(prayerTimes.get(i));
-                    String p = prayerTimes.get(i);
+                    magrib.setName(prayerNames.get(t));
+                    magrib.setTime(prayerTimes.get(t));
+                    String p = prayerTimes.get(t);
                     String nextPrayer = p.substring(0, 2);
                     int hour = Integer.parseInt(nextPrayer);
                     if (timeInt > hour) {
@@ -317,9 +319,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         magrib.setNext(false);
                     }
                 }else if(RG4==3){
-                    magrib.setName(prayerNames.get(i));
-                    magrib.setTime(prayerTimes.get(i).substring(0, 5));
-                    String p = prayerTimes.get(i).substring(0, 5);
+                    magrib.setName(prayerNames.get(t));
+                    magrib.setTime(prayerTimes.get(t).substring(0, 5));
+                    String p = prayerTimes.get(t).substring(0, 5);
                     double hour = Double.parseDouble(p);
                     if (timeInt > hour) {
                         magrib.setNext(false);
@@ -331,16 +333,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         magrib.setNext(false);
                     }
                 }else{
-                    magrib.setName(prayerNames.get(i));
-                    magrib.setTime(prayerTimes.get(i));
+                    magrib.setName(prayerNames.get(t));
+                    magrib.setTime(prayerTimes.get(t));
                 }
                 list.add(magrib);
-            }
-            if (i == 6) {
+            }break;
+                case 6: {
                 if(RG4==0) {
-                    isha.setName(prayerNames.get(i));
-                    isha.setTime(prayerTimes.get(i));
-                    String p = prayerTimes.get(i);
+                    isha.setName(prayerNames.get(t));
+                    isha.setTime(prayerTimes.get(t));
+                    String p = prayerTimes.get(t);
                     String nextPrayer = p.substring(0, 2);
                     int hour = Integer.parseInt(nextPrayer);
                     if (timeInt > hour) {
@@ -353,9 +355,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         isha.setNext(false);
                     }
                 }else if(RG4==3){
-                    isha.setName(prayerNames.get(i));
-                    isha.setTime(prayerTimes.get(i).substring(0, 5));
-                    String p = prayerTimes.get(i).substring(0, 5);
+                    isha.setName(prayerNames.get(t));
+                    isha.setTime(prayerTimes.get(t).substring(0, 5));
+                    String p = prayerTimes.get(t).substring(0, 5);
                     double hour = Double.parseDouble(p);
                     System.out.println(hour);
                     if (timeInt > hour) {
@@ -368,11 +370,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         isha.setNext(false);
                     }
                 }else{
-                    isha.setName(prayerNames.get(i));
-                    isha.setTime(prayerTimes.get(i));
+                    isha.setName(prayerNames.get(t));
+                    isha.setTime(prayerTimes.get(t));
                 }
                 list.add(isha);
-            }
+            }}
         }
         times.setHasFixedSize(true);
 
@@ -434,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         // check if the request code is same as what is passed  here it is 2
         if(resultCode == 0)
         {
-            refrechTimes();
+            refreshTimes();
         }
     }
 
@@ -500,27 +502,3 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 }
 
-
-//--------------------- Copyright Block ----------------------
-/*
-
-PrayTime.java: Prayer Times Calculator (ver 1.0)
-Copyright (C) 2007-2010 PrayTimes.org
-
-Java Code By: Hussain Ali Khan
-Original JS Code By: Hamid Zarrabi-Zadeh
-
-License: GNU LGPL v3.0
-
-TERMS OF USE:
-	Permission is granted to use this code, with or
-	without modification, in any website or application
-	provided that credit is given to the original work
-	with a link back to PrayTimes.org.
-
-This program is distributed in the hope that it will
-be useful, but WITHOUT ANY WARRANTY.
-
-PLEASE DO NOT REMOVE THIS COPYRIGHT BLOCK.
-
-*/
