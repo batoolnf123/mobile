@@ -8,38 +8,51 @@
     tools:context=".MainActivity">
 
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="fitEnd"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="262dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="143dp"
+        android:layout_marginTop="256dp"
+        android:layout_marginEnd="193dp"
+        android:layout_marginBottom="19dp"
+
+        android:backgroundTint="@color/colorSecondaryLow3"
+        android:text="Prayer Time"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.401"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
 
     <Button
         android:id="@+id/settingButton"
-        android:layout_width="100px"
-        android:layout_height="100px"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="28dp"
-        android:backgroundTint="@color/white"
+        android:layout_width="40dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/baseline_app_settings_alt_24"
+
+
+        android:backgroundTint="@color/white"
+
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="600px"
+        android:layout_width="399dp"
+        android:layout_height="437dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -54,8 +67,6 @@
         </androidx.recyclerview.widget.RecyclerView>
 
     </RelativeLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
