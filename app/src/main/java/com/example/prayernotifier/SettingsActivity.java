@@ -22,13 +22,13 @@ import androidx.appcompat.widget.Toolbar;
 
 
 public class SettingsActivity extends AppCompatActivity{
- /*   public static final String PREF_SILENT = "silent";
+    public static final String PREF_SILENT = "silent";
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
  protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app_settings);
+        setContentView(R.layout.activity_settings);
 
         if (findViewById(R.id.fragment) != null && savedInstanceState == null) {
             getFragmentManager()
@@ -52,5 +52,5 @@ public class SettingsActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-*/
+
 }

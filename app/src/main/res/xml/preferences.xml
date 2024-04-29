@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="">
+
+
+        <ListPreference
+            android:defaultValue="@string/juristic_default"
+            android:entries="@array/juristic_entries"
+            android:entryValues="@array/juristic_values"
+            android:key="juristic"
+            android:title="@string/juristic_title" />
+
+        <ListPreference
+            android:defaultValue="@string/calculation_default"
+            android:entries="@array/calculation_entries"
+            android:entryValues="@array/calculation_values"
+            android:key="@string/calculation"
+            android:title="Calculation Method" />
+
+        <ListPreference
+            android:defaultValue="@string/latitude_default"
+            android:entries="@array/latitude_entries"
+            android:entryValues="@array/latitude_values"
+            android:key="@string/latitude"
+            android:title="@string/latitude_title" />
+
+        <!-- Add ListPreference for Location -->
+        <ListPreference
+            android:defaultValue="@string/location_default"
+            android:entries="@array/location_entries"
+            android:entryValues="@array/location_values"
+            android:key="@string/location"
+            android:title="@string/location_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Silence Phone">
+        <EditTextPreference
+            android:defaultValue="0"
+            android:key="silent"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Choose the time in minutes to switch your phone to silent mode"
+            android:title="Set the silent mode time" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

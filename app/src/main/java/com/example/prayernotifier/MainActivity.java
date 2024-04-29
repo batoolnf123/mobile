@@ -96,18 +96,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         String s1 = prefs.getString(getString(R.string.juristic), "");
         String s2 = prefs.getString(getString(R.string.calculation), "");
         String s3 = prefs.getString(getString(R.string.latitude), "");
-        String s4 = prefs.getString(getString(R.string.time), "");
+
 
 
         int RG1;
         int RG2;
         int RG3;
         int RG4 = 0; // just intilize
-        if (!(s1.equals("") && s2.equals("") && s3.equals("") && s4.equals(""))) {
+        if (!(s1.equals("") && s2.equals("") && s3.equals(""))) {
             RG1 = Integer.parseInt(s1);
             RG2 = Integer.parseInt(s2);
             RG3 = Integer.parseInt(s3);
-            RG4 = Integer.parseInt(s4);
+
 
             prayers.setTimeFormat(RG4);
             prayers.setCalcMethod(RG2);
@@ -391,11 +391,11 @@ break;
         /*
          * the user will get notified based on what prayer is upcoming next
          */
-     /*   for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             // Generate a pending intent to be used later
             Intent intent = new Intent(MainActivity.this, PrayTimeNotification.class);
             intent.putExtra("NotificationID", 1);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
             String timeInHours="";
@@ -427,7 +427,7 @@ break;
                 long timeInMillis = finalDate.getTime(); // get time in millisecond
                 alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
             }
-        }*/
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
