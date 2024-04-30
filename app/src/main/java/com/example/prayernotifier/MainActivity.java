@@ -60,6 +60,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         createNotificationChannel(); // Create a notification channel
 
         Button settings = findViewById(R.id.settingButton);
+        Button qibla =findViewById(R.id.qibla);
+        qibla.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent q = new Intent(MainActivity.this, qibla.class);
+                startActivity(q);
+            }
+        });
         settings.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);

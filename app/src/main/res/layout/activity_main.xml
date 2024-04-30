@@ -32,17 +32,27 @@
 
     <Button
         android:id="@+id/settingButton"
-        android:layout_width="10dp"
-        android:layout_height="18dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/baseline_app_settings_alt_24"
-
-
         android:backgroundTint="@color/white"
-
-
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/qibla"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="251dp"
+
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="28dp"
+        android:background="@drawable/rounded_assistant_navigation_24"
+        android:backgroundTint="@color/colorT2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/settingButton"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
