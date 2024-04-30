@@ -533,7 +533,9 @@ public class PrayTime {
 
     }
 
-
+    public String floatToTime12NS(double time) {
+        return floatToTime12(time, true);
+    }
     // compute prayer times at given julian date
     private double[] computeTimes(double[] times) {
 

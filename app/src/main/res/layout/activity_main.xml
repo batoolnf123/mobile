@@ -32,8 +32,8 @@
 
     <Button
         android:id="@+id/settingButton"
-        android:layout_width="40dp"
-        android:layout_height="45dp"
+        android:layout_width="10dp"
+        android:layout_height="18dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/baseline_app_settings_alt_24"
@@ -43,8 +43,7 @@
 
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
