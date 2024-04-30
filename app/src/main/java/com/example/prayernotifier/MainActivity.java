@@ -40,8 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-//dd
-//e
+
 public class MainActivity extends AppCompatActivity implements LocationListener {
     Button calculatePrayTimes;
     ArrayList<PrayerTime> list;
