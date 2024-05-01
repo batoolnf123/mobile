@@ -2,9 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
+
+
+
     <PreferenceCategory android:title="">
 
-
+        <Preference
+            android:title="@string/location_title"
+            android:key="location_pref" />
         <ListPreference
             android:defaultValue="@string/juristic_default"
             android:entries="@array/juristic_entries"
@@ -24,15 +31,8 @@
             android:entries="@array/latitude_entries"
             android:entryValues="@array/latitude_values"
             android:key="@string/latitude"
-            android:title="@string/latitude_title" />
+            android:title="Adjustments" />
 
-        <!-- Add ListPreference for Location -->
-        <ListPreference
-            android:defaultValue="@string/location_default"
-            android:entries="@array/location_entries"
-            android:entryValues="@array/location_values"
-            android:key="@string/location"
-            android:title="@string/location_title" />
 
     </PreferenceCategory>
 
@@ -45,5 +45,7 @@
             android:summary="Choose the time in minutes to switch your phone to silent mode"
             android:title="Set the silent mode time" />
     </PreferenceCategory>
+
+
 
 </PreferenceScreen>
