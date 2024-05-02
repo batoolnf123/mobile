@@ -16,7 +16,7 @@ tools:context=".SettingsActivity">
     android:minHeight="?attr/actionBarSize"
     android:theme="?attr/actionBarTheme"
     app:title="Settings"
-    android:backgroundTint="@color/colorPrimaryVariant"
+    android:backgroundTint="@color/colorT2"
     app:navigationIcon="?attr/homeAsUpIndicator"/>
 
 
