@@ -12,7 +12,8 @@
         <Preference
             android:title="@string/location_title"
             android:key="location_pref"
-            android:icon="@drawable/baseline_add_location_24"/>
+            android:icon="@drawable/baseline_add_location_24"
+            android:clickable="true"/>
         <ListPreference
             android:defaultValue="@string/juristic_default"
             android:entries="@array/juristic_entries"

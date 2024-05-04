@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    private void refreshTimes(){
+    void refreshTimes(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
         GPSTracker gpsTracker = new GPSTracker(MainActivity.this);
@@ -450,7 +450,7 @@ break;
     {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
-        if(resultCode == 0)
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK)
         {
             refreshTimes();
         }

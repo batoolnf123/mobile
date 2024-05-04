@@ -111,6 +111,10 @@ public class GPSTracker extends Service implements LocationListener {
         // return longitude
         return longitude;
     }
+
+    public void updateLocation() {
+        getLocation();
+    }
     /**
      * Function to check GPS/wifi enabled
      * @return boolean
