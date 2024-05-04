@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">prayernotifier</string>
 
-
+    <string name="ok">ok</string>
+    <string name="cancel">cancle</string>
+    <string name="gps_settings_title">GPS settings</string>
+    <string name="gps_settings_text">GPS is not enabled, you must activate it first from the settings to get the Qibla direction.</string>
     <string name="juristic">juristic</string>
     <string name="juristic_title">Juristic Method</string>
     <string name="juristic_default">0</string>

@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     double longitude;
     private AudioManager myAudioManager;
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
+    GPSTracker gpsTracker;
 
 
     @Override
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         createNotificationChannel(); // Create a notification channel
-
+        gpsTracker = new GPSTracker(MainActivity.this);
         Button settings = findViewById(R.id.settingButton);
         Button qibla =findViewById(R.id.qibla);
         qibla.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, 100);
+        }else{
+            startLocationUpdates();
         }
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -95,10 +98,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private void refreshTimes(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = prefs.edit();
+        GPSTracker gpsTracker = new GPSTracker(MainActivity.this);
+
+        if (gpsTracker.canGetLocation()) {
+            // Get current latitude and longitude
+            latitude = gpsTracker.getLatitude();
+            longitude = gpsTracker.getLongitude();
+        }
 
         PrayTime prayers = new PrayTime();
-        double latitude1 = 24.644659;
-        double longitude2 = 46.587570;
         double timezone = prayers.getBaseTimeZone();
 
         String s1 = prefs.getString(getString(R.string.juristic), "");
@@ -136,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         int[] offsets = {0, 0, 0, 0, 0, 0, 0}; // {Fajr,Sunrise,Dhuhr,Asr,Sunset,Maghrib,Isha}
         prayers.tune(offsets);
 
-        ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal, latitude1, longitude2, timezone);
+        ArrayList<String> prayerTimes = prayers.getPrayerTimes(cal, latitude, longitude, timezone);
 
 
         PrayerTime fajer = new PrayerTime();
@@ -447,6 +455,23 @@ break;
             refreshTimes();
         }
     }
+
+    private void startLocationUpdates() {
+        // Check if GPS location can be obtained
+        if (gpsTracker.canGetLocation()) {
+            Location location = gpsTracker.getLocation();
+            if (location != null) {
+                double latitude = gpsTracker.getLatitude();
+                double longitude = gpsTracker.getLongitude();
+                // Do something with the obtained latitude and longitude
+                Toast.makeText(MainActivity.this, "Latitude: " + latitude + ", Longitude: " + longitude, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Show settings alert dialog if GPS is not enabled
+            gpsTracker.showSettingsAlert();
+        }
+    }
+
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
